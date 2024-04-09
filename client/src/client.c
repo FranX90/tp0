@@ -1,4 +1,5 @@
 #include "client.h"
+#include <readline/readline.h>
 
 int main(void)
 {
@@ -65,12 +66,16 @@ t_log* iniciar_logger(void)
 {
 	t_log* nuevo_logger = log_create("tp0.log", "Cliente", 1, LOG_LEVEL_INFO);
 
+	if (nuevo_logger == NULL) exit(3);
+
 	return nuevo_logger;
 }
 
 t_config* iniciar_config(void)
 {
 	t_config* nuevo_config = config_create("cliente.config");
+
+	if (nuevo_config == NULL) exit(3);
 
 	return nuevo_config;
 }
@@ -80,13 +85,18 @@ void leer_consola(t_log* logger)
 	char* leido;
 
 	// La primera te la dejo de yapa
-	leido = readline("> ");
+	// leido = readline("> ");
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
+	do {
+		leido = readline("> ");
+		log_info(logger, leido);
+	} while (leido[0] != '\0');
 
 	// ¡No te olvides de liberar las lineas antes de regresar!
 
+	free(leido);
 }
 
 void paquete(int conexion)
