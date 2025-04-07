@@ -30,10 +30,9 @@ int main(void)
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 
-	ip = config_get_int_value(config, "IP");
+	ip = string_duplicate(config_get_string_value(config, "IP"));
 	puerto = string_duplicate(config_get_string_value(config, "PUERTO"));
 	valor = string_duplicate(config_get_string_value(config, "CLAVE"));
-	char* ip_string = string_itoa(ip);
 
 	// Loggeamos el valor de config
 
@@ -54,8 +53,8 @@ int main(void)
 	// Armamos y enviamos el paquete
 	paquete(conexion);
 
-	if (ip_string)
-		free(ip_string);
+	if (ip)
+		free(ip);
 	if (puerto)
 		free(puerto);
 	if (valor)

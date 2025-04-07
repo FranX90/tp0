@@ -28,6 +28,9 @@ int main(void) {
 		}
 	}
 	return EXIT_SUCCESS;
+
+	close(cliente_fd);
+	close(server_fd);
 }
 
 void iterator(char* value) {
