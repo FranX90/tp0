@@ -30,6 +30,11 @@ int main(void)
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 
+	ip = config_get_int_value(config, "IP");
+	puerto = string_duplicate(config_get_string_value(config, "PUERTO"));
+	valor = string_duplicate(config_get_string_value(config, "CLAVE"));
+	char* ip_string = string_itoa(ip);
+
 	// Loggeamos el valor de config
 
 
@@ -49,6 +54,12 @@ int main(void)
 	// Armamos y enviamos el paquete
 	paquete(conexion);
 
+	if (ip_string)
+		free(ip_string);
+	if (puerto)
+		free(puerto);
+	if (valor)
+		free(valor);
 	terminar_programa(conexion, logger, config);
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
@@ -71,6 +82,11 @@ t_config* iniciar_config(void)
 {
 	t_config* nuevo_config;
 
+	nuevo_config = config_create("cliente.config");
+
+	if (!nuevo_config)
+		abort();
+
 	return nuevo_config;
 }
 
@@ -83,9 +99,15 @@ void leer_consola(t_log* logger)
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
+	while(leido && string_length(leido) > 0){
+		log_info(logger, leido);
+		leido = readline("> ");
+	}
 
 	// ¡No te olvides de liberar las lineas antes de regresar!
 
+	if (leido)
+		free(leido);
 }
 
 void paquete(int conexion)
@@ -105,4 +127,7 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 {
 	/* Y por ultimo, hay que liberar lo que utilizamos (conexion, log y config) 
 	  con las funciones de las commons y del TP mencionadas en el enunciado */
+	log_destroy(logger);
+	config_destroy(config);
+	liberar_conexion(conexion);
 }
